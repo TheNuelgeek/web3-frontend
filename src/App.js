@@ -11,7 +11,7 @@ const BRTTokenAddress = "0x169E82570feAc981780F3C48Ee9f05CED1328e1b";
 
 function App() {
 
-  // a flag for keeping track of whether or not a user is connected
+  // a flag for keeping track of whether or not a user is connected.
   const [connected, setConnected] = useState(false);
 
   // connected user details
