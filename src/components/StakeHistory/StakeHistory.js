@@ -8,6 +8,7 @@ const StakeHistory = ({stakeData}) => {
 
   return (
     <div className={Styles.root}>
+      <div className={Styles.scroll}>
         <table className= {Styles.table}>
           <thead className = {Styles.table_header}>
               <tr className={Styles.table__head_row}>
@@ -40,6 +41,7 @@ const StakeHistory = ({stakeData}) => {
             })}
           </tbody>
         </table>
+        </div>
     </div>
   )
 }

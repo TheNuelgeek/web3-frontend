@@ -1,5 +1,6 @@
 import './App.css';
 import Header from './components/header/Header';
+import { formatDate } from './utils/helpers';
 import MyStake from './components/MyStake/MyStake';
 import StakeHistory from './components/StakeHistory/StakeHistory';
 import {useState, useEffect} from 'react'
@@ -36,6 +37,36 @@ function App() {
   // all stake history data displayed on the history table
   const [stateHistory, setStakeHistory] = useState([]);
 
+  const getStake = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const BRTContractInstance = new Contract(
+      BRTTokenAddress,
+      BRTTokenAbi,
+      signer
+    );
+    const myStake = await BRTContractInstance.myStake();
+    const stake = utils.formatUnits(myStake.stakeAmount, 18);
+    setStakeAmount(stake);
+
+    // getting the last stake in seconds
+    const lastestStake = formatDate(myStake.time.toString());
+    const newStakeTime = new Date(lastestStake);
+    const stakeSeconds = Math.floor(newStakeTime.getTime() / 1000);
+
+    // getting the current day in seconds
+    const currentDay = new Date();
+    const currentDaySeconds = Math.floor(currentDay.getTime() / 1000);
+
+    // getting the difference between the lastest stake and the current day
+    const timeDifference = currentDaySeconds - stakeSeconds;
+
+    // showing reward after 3 days otherwise showing 0
+    if (timeDifference >= 259200) {
+      const reward = 0.0000000386 * timeDifference * stake;
+      setRewardAmount(reward.toFixed(3));
+    } else setRewardAmount("00.00");
+  };
   // helper function for getting the matic and token balance, given an address
   const getAccountDetails = async (address) => {
     try {
@@ -43,11 +74,14 @@ function App() {
       const userMaticBal = await provider.getBalance(address);
       const BRTContractInstance = new Contract(BRTTokenAddress, BRTTokenAbi, provider);
       const userBRTBalance = await BRTContractInstance.balanceOf(address)
+      await getStake();
       return {userBRTBalance, userMaticBal}
     }catch(err) {
       console.log(err)
     }
   }
+
+  
 
   // handler for when user switch from one account to another or completely disconnected
   const handleAccountChanged = async (accounts) => {
@@ -192,9 +226,10 @@ function App() {
     const BRTContractInstance = new Contract(BRTTokenAddress, BRTTokenAbi, signer);
     const weiValue = utils.parseEther(stakeInput);
     const stakeTx = await BRTContractInstance.stakeBRT(weiValue);
-
+    setStakeInput("")
     const stakeTxHash = await provider.getTransaction(stakeTx.hash)
     const response = await stakeTx.wait();
+    await getStake();
 
     const address = response.events[1].args[0]
     const amountStaked = response.events[1].args[1].toString()
@@ -203,9 +238,45 @@ function App() {
     
   }
 
-  const onClickWithdraw = (e) => {
+  
+
+  // const onClickStake = async (e) => {
+  //   e.preventDefault()
+  //   if(stakeInput < 0) return alert("you cannot stake less than 0 BRT")
+
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   const signer = provider.getSigner();
+  //   const BRTContractInstance = new Contract(BRTTokenAddress, BRTTokenAbi, signer);
+  //   const weiValue = utils.parseEther(stakeInput);
+  //   const stakeTx = await BRTContractInstance.stakeBRT(weiValue);
+
+  //   const stakeTxHash = await provider.getTransaction(stakeTx.hash)
+  //   const response = await stakeTx.wait();
+
+  //   const address = response.events[1].args[0]
+  //   const amountStaked = response.events[1].args[1].toString()
+  //   const time = response.events[1].args[2].toString()
+
+    
+  // }
+
+  const onClickWithdraw = async(e) => {
     e.preventDefault()
-    console.log("unstaking...........", withdrawInput);
+    //if(stakeInput < 0) return alert("you cannot stake less than 0 BRT")
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const BRTContractInstance = new Contract(BRTTokenAddress, BRTTokenAbi, signer);
+    const weiValue = utils.parseEther(withdrawInput);
+    const stakeTx = await BRTContractInstance.withdraw(weiValue);
+
+    //const stakeTxHash = await provider.getTransaction(stakeTx.hash)
+    const response = await stakeTx.wait();
+    await getStake();
+
+    const address = response.events[1].args[0]
+    const amountStaked = response.events[1].args[1].toString()
+    const time = response.events[1].args[2].toString()
   }
 
   
