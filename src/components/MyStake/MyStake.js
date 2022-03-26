@@ -11,7 +11,10 @@ const MyStake = ({
   onClickWithdraw,
   rewardAmount,
   stakeAmount,
-  connected
+  connected,
+  onClickGetAddress,
+  addressInput,
+  userStake
 }) => {
   return (
     <div className={Styles.root}>
@@ -56,6 +59,20 @@ const MyStake = ({
             disabled = {!connected}
             >Unstake</button>
           </form>
+          <form onSubmit = {onClickGetAddress} className={Styles.form} >
+            <input 
+              type = "text" 
+              placeholder="Amount to unstake" 
+              className={Styles.input}
+              value = {addressInput}
+              onChange = {onChangeInput}
+              id = "setAddress"
+            />
+            <button type="submit"
+            className={Styles.stake_btn2}
+            >Get Stake</button>
+          </form>
+          <h2>{userStake}</h2>
         </div>
     </div>
   )

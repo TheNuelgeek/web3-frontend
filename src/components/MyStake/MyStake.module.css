@@ -7,7 +7,7 @@
 }
 
 .heading {
-    color: brown;
+    color: #09009B;
     font-size: 2.2rem;
     text-transform: capitalize;
 }
@@ -33,7 +33,18 @@
 .stake_btn {
     padding: .8rem 1.2rem;
     border: 0;
-    background-color: rgb(8, 153, 107);
+    background-color: #09009B;
+    border-radius: .3rem;
+    margin-left: 1rem;
+    width: 6rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+.stake_btn2 {
+    padding: .8rem 1.2rem;
+    border: 0;
+    background-color: #D98C00;
     border-radius: .3rem;
     margin-left: 1rem;
     width: 6rem;
@@ -44,7 +55,7 @@
 .unstake_btn {
     padding: .8rem 1.2rem;
     border: 0;
-    background-color: brown;
+    background-color: rgb(138, 6, 6);
     border-radius: .3rem;
     margin-left: 1rem;
     width: 6rem;

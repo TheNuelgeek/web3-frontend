@@ -1,23 +1,25 @@
 .root {
-    background-color: rgb(199, 236, 224);
+    background-color: #eceaf5;
     padding: 2rem;
     display: flex;
     justify-content: space-between;
 }
 
 .logo {
-    font-size: 1.8rem;
-    font-family: ui-monospace;
-    color: brown;
+    font-size: 2.1rem;
+    font-family: Helvetica ;
+    font-weight: bold;
+     /* Ubuntu; */
+    color: #09009B;
 }
 
 .logo2 {
-    color: rgb(8, 153, 107);
+    color: #09009B;
     font-size: 2.1rem;
 }
 
 .connect_btn {
-    background-color: rgb(8, 153, 107);
+    background-color: #09009B;
     color: #fff;
     font-size: 1.2rem;
     border: 1px solid #fff;

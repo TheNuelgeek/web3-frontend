@@ -36,6 +36,8 @@ function App() {
 
   // all stake history data displayed on the history table
   const [stateHistory, setStakeHistory] = useState([]);
+  const [userStake, setUserStake] = useState([]);
+  const [addressInput, setAddressInput] = useState([]);
 
   const getStake = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -148,6 +150,26 @@ function App() {
       setConnected(true)
   }
 
+  const onClickGetAddress = async (e) => {
+    e.preventDefault();
+    const customProvider = new ethers.providers.JsonRpcProvider(
+      process.env.REACT_APP_RPC_URL
+    );
+    const BRTContractInstance = new Contract(
+      BRTTokenAddress,
+      BRTTokenAbi,
+      customProvider
+    );
+
+    // const addressValue = utils.parseEther(addressInput);
+    const userReward = await BRTContractInstance.getStakeByAddress(
+      addressInput
+    );
+    console.log(userReward);
+    // console.log());
+    setUserStake(utils.formatUnits(userReward.stakeAmount, 18));
+  };
+
   // a function for fetching necesary data from the contract and also listening for contract event when the page loads
   const init = async () => {
     const customProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_RPC_URL)
@@ -210,7 +232,11 @@ function App() {
       case "unstake":
         setWithdrawInput(target.value);
         break;
-    
+
+      case "setAddress":
+        setAddressInput(target.value);
+        break;
+      
       default:
         break;
     }
@@ -297,7 +323,9 @@ function App() {
           stakeAmount = {stakeAmount}
           rewardAmount = {rewardAmount}
           connected = {connected}
-
+          onClickGetAddress={onClickGetAddress}
+          addressInput = {addressInput}
+          userStake={userStake}
         />
         <StakeHistory
           stakeData = {stateHistory}
